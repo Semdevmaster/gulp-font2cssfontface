@@ -8,15 +8,15 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _cssFontStyleKeywords = require('css-font-style-keywords');
+var _cssFontStyleKeywords = require('./css-font-style-keywords.json');
 
 var _cssFontStyleKeywords2 = _interopRequireDefault(_cssFontStyleKeywords);
 
-var _cssFontWeightKeywords = require('css-font-weight-keywords');
+var _cssFontWeightKeywords = require('./css-font-weight-keywords.json');
 
 var _cssFontWeightKeywords2 = _interopRequireDefault(_cssFontWeightKeywords);
 
-var _cssFontWeightNames = require('css-font-weight-names');
+var _cssFontWeightNames = require('./css-font-weight-names.json');
 
 var _cssFontWeightNames2 = _interopRequireDefault(_cssFontWeightNames);
 

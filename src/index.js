@@ -1,9 +1,9 @@
 'use strict'
 
 import path from 'path'
-import fontStyleKeywords from 'css-font-style-keywords'
-import fontWeightKeywords from 'css-font-weight-keywords'
-import fontWeightNames from 'css-font-weight-names'
+import fontStyleKeywords from './css-font-style-keywords.json'
+import fontWeightKeywords from './css-font-weight-keywords.json'
+import fontWeightNames from './css-font-weight-names.json'
 import through from 'through2'
 import replaceExt from 'replace-ext'
 import PluginError from 'plugin-error'
