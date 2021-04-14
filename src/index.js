@@ -1,9 +1,9 @@
 'use strict'
 
 import path from 'path'
-import fontStyleKeywords from 'css-font-style-keywords'
-import fontWeightKeywords from 'css-font-weight-keywords'
-import fontWeightNames from 'css-font-weight-names'
+import fontStyleKeywords from './css-font-style-keywords.json'
+import fontWeightKeywords from './css-font-weight-keywords.json'
+import fontWeightNames from './css-font-weight-names.json'
 import through from 'through2'
 import replaceExt from 'replace-ext'
 import PluginError from 'plugin-error'
@@ -107,15 +107,15 @@ function font2cssfontface () {
       const fontStyle = guessFontStyle(basename)
       const fontWeight = guessFontWeight(basename)
 
-      attributes.push(getFontFamily(basename, attributes.length))
-      attributes.push(getSrc(file))
-
       if (fontStyle !== '') {
         attributes.push(fontStyle)
       }
       if (fontWeight !== '') {
         attributes.push(fontWeight)
       }
+
+      attributes.push(getFontFamily(basename, attributes.length))
+      attributes.push(getSrc(file))
 
       const contents = `@font-face{${attributes.join('')}font-display:swap;}`
 

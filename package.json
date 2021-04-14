@@ -1,6 +1,6 @@
 {
   "name": "gulp-font2cssfontface",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Write font files as CSS @font-face rules using Gulp.",
   "repository": "Semdevmaster/gulp-font2cssfontface",
   "author": {
