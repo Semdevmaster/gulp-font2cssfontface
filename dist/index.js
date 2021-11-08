@@ -1,38 +1,13 @@
-'use strict';
+import path from 'path'
+import {createRequire} from 'module'
+import through from 'through2'
+import replaceExt from 'replace-ext'
+import PluginError from 'plugin-error'
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
-var _cssFontStyleKeywords = require('./css-font-style-keywords.json');
-
-var _cssFontStyleKeywords2 = _interopRequireDefault(_cssFontStyleKeywords);
-
-var _cssFontWeightKeywords = require('./css-font-weight-keywords.json');
-
-var _cssFontWeightKeywords2 = _interopRequireDefault(_cssFontWeightKeywords);
-
-var _cssFontWeightNames = require('./css-font-weight-names.json');
-
-var _cssFontWeightNames2 = _interopRequireDefault(_cssFontWeightNames);
-
-var _through = require('through2');
-
-var _through2 = _interopRequireDefault(_through);
-
-var _replaceExt = require('replace-ext');
-
-var _replaceExt2 = _interopRequireDefault(_replaceExt);
-
-var _pluginError = require('plugin-error');
-
-var _pluginError2 = _interopRequireDefault(_pluginError);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+const require = createRequire(import.meta.url);
+const fontStyleKeywords = require('./css-font-style-keywords.json')
+const fontWeightKeywords = require('./css-font-weight-keywords.json')
+const fontWeightNames = require('./css-font-weight-names.json')
 
 /**
  * Extract the `font-family` from the font's file name.
@@ -41,11 +16,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @return {String}          `font-family` property and value.
  */
 function getFontFamily(basename, count) {
-  var basenameParts = basename.split('-');
+  const basenameParts = basename.split('-')
   if (basenameParts.length === 1 || count === 0) {
-    return 'font-family:"' + basename + '";';
+    return `font-family:"${basename}";`
   }
-  return 'font-family:"' + basenameParts.slice(0, -count).join('-') + '";';
+  return `font-family:"${basenameParts.slice(0, -count).join('-')}";`
 }
 
 /**
@@ -54,15 +29,17 @@ function getFontFamily(basename, count) {
  * @return {String}          `font-style` property and guessed value.
  */
 function guessFontStyle(basename) {
-  return basename.split('-').slice(1).map(function (item) {
-    return item.toLowerCase();
-  }).reduce(function (prev, item) {
-    if (_cssFontStyleKeywords2.default.indexOf(item) >= 0) {
-      return 'font-style:' + item + ';';
-    }
+  return basename
+    .split('-')
+    .slice(1)
+    .map(item => item.toLowerCase())
+    .reduce((prev, item) => {
+      if (fontStyleKeywords.indexOf(item) >= 0) {
+        return `font-style:${item};`
+      }
 
-    return prev;
-  }, '');
+      return prev
+    }, '')
 }
 
 /**
@@ -71,23 +48,25 @@ function guessFontStyle(basename) {
  * @return {String}          `font-weight` property and guessed value.
  */
 function guessFontWeight(basename) {
-  return basename.split('-').slice(1).map(function (item) {
-    return item.toLowerCase();
-  }).reduce(function (prev, item) {
-    if (item === 'normal') {
-      return prev;
-    }
+  return basename
+    .split('-')
+    .slice(1)
+    .map(item => item.toLowerCase())
+    .reduce((prev, item) => {
+      if (item === 'normal') {
+        return prev
+      }
 
-    if (_cssFontWeightNames2.default[item]) {
-      return 'font-weight:' + _cssFontWeightNames2.default[item] + ';';
-    }
+      if (fontWeightNames[item]) {
+        return `font-weight:${fontWeightNames[item]};`
+      }
 
-    if (_cssFontWeightKeywords2.default.indexOf(item) >= 0) {
-      return 'font-weight:' + item + ';';
-    }
+      if (fontWeightKeywords.indexOf(item) >= 0) {
+        return `font-weight:${item};`
+      }
 
-    return prev;
-  }, '');
+      return prev
+    }, '')
 }
 
 /**
@@ -96,9 +75,9 @@ function guessFontWeight(basename) {
  * @return {String}      src attribute.
  */
 function getSrc(file) {
-  var fileExtName = _path2.default.extname(file.path);
-  var format = fileExtName.includes('woff2') ? 'woff2' : fileExtName.includes('woff') ? 'woff' : 'truetype';
-  return 'src:url("../fonts/' + _path2.default.basename(file.history[0]) + '") format("' + format + '");';
+  const fileExtName = path.extname(file.path)
+  let format = fileExtName.includes('woff2') ? 'woff2' : fileExtName.includes('woff') ? 'woff' : 'truetype'
+  return `src:url("../fonts/${path.basename(file.history[0])}") format("${format}");`
 }
 
 /**
@@ -111,42 +90,42 @@ function getSrc(file) {
  * @return {Object} CSS file object.
  */
 function font2cssfontface() {
-  return _through2.default.obj(function (file, enc, callback) {
+  return through.obj(function (file, enc, callback) {
     if (file.isNull()) {
-      this.push(file);
-      return callback();
+      this.push(file)
+      return callback()
     }
 
     if (file.isStream()) {
-      this.emit('error', new _pluginError2.default('gulp-font2cssfontface', 'Streaming is not supported'));
-      return callback();
+      this.emit('error', new PluginError('gulp-font2cssfontface', 'Streaming is not supported'))
+      return callback()
     }
 
     if (file.isBuffer()) {
-      var basename = _path2.default.basename(file.path, _path2.default.extname(file.path));
+      const basename = path.basename(file.path, path.extname(file.path))
 
-      var attributes = [];
-      var fontStyle = guessFontStyle(basename);
-      var fontWeight = guessFontWeight(basename);
+      let attributes = []
+      const fontStyle = guessFontStyle(basename)
+      const fontWeight = guessFontWeight(basename)
 
       if (fontStyle !== '') {
-        attributes.push(fontStyle);
+        attributes.push(fontStyle)
       }
       if (fontWeight !== '') {
-        attributes.push(fontWeight);
+        attributes.push(fontWeight)
       }
 
-      attributes.push(getFontFamily(basename, attributes.length));
-      attributes.push(getSrc(file));
+      attributes.push(getFontFamily(basename, attributes.length))
+      attributes.push(getSrc(file))
 
-      var contents = '@font-face{' + attributes.join('') + 'font-display:swap;}';
+      const contents = `@font-face{${attributes.join('')}font-display:swap;}`
 
-      file.contents = new Buffer.from(contents);
-      file.path = (0, _replaceExt2.default)(file.path, '.css');
+      file.contents = new Buffer.from(contents)
+      file.path = replaceExt(file.path, '.css')
 
-      return callback(null, file);
+      return callback(null, file)
     }
-  });
+  })
 }
 
-exports.default = font2cssfontface;
+export default font2cssfontface

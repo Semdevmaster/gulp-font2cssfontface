@@ -1,12 +1,13 @@
-'use strict'
-
 import path from 'path'
-import fontStyleKeywords from './css-font-style-keywords.json'
-import fontWeightKeywords from './css-font-weight-keywords.json'
-import fontWeightNames from './css-font-weight-names.json'
+import {createRequire} from 'module'
 import through from 'through2'
 import replaceExt from 'replace-ext'
 import PluginError from 'plugin-error'
+
+const require = createRequire(import.meta.url);
+const fontStyleKeywords = require('./css-font-style-keywords.json')
+const fontWeightKeywords = require('./css-font-weight-keywords.json')
+const fontWeightNames = require('./css-font-weight-names.json')
 
 /**
  * Extract the `font-family` from the font's file name.
@@ -14,7 +15,7 @@ import PluginError from 'plugin-error'
  * @param  {number} count    Count of guessed information to extract.
  * @return {String}          `font-family` property and value.
  */
-function getFontFamily (basename, count) {
+function getFontFamily(basename, count) {
   const basenameParts = basename.split('-')
   if (basenameParts.length === 1 || count === 0) {
     return `font-family:"${basename}";`
@@ -27,7 +28,7 @@ function getFontFamily (basename, count) {
  * @param  {String} basename Font base filename.
  * @return {String}          `font-style` property and guessed value.
  */
-function guessFontStyle (basename) {
+function guessFontStyle(basename) {
   return basename
     .split('-')
     .slice(1)
@@ -46,7 +47,7 @@ function guessFontStyle (basename) {
  * @param  {String} basename Font base filename.
  * @return {String}          `font-weight` property and guessed value.
  */
-function guessFontWeight (basename) {
+function guessFontWeight(basename) {
   return basename
     .split('-')
     .slice(1)
@@ -73,7 +74,7 @@ function guessFontWeight (basename) {
  * @param  {Object} file File object.
  * @return {String}      src attribute.
  */
-function getSrc (file) {
+function getSrc(file) {
   const fileExtName = path.extname(file.path)
   let format = fileExtName.includes('woff2') ? 'woff2' : fileExtName.includes('woff') ? 'woff' : 'truetype'
   return `src:url("../fonts/${path.basename(file.history[0])}") format("${format}");`
@@ -88,7 +89,7 @@ function getSrc (file) {
  *
  * @return {Object} CSS file object.
  */
-function font2cssfontface () {
+function font2cssfontface() {
   return through.obj(function (file, enc, callback) {
     if (file.isNull()) {
       this.push(file)
