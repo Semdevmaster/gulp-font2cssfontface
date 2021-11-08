@@ -1,6 +1,7 @@
 {
   "name": "gulp-font2cssfontface",
-  "version": "0.1.1",
+  "version": "1.0.0",
+  "type": "module",
   "description": "Write font files as CSS @font-face rules using Gulp.",
   "repository": "Semdevmaster/gulp-font2cssfontface",
   "author": {
@@ -20,14 +21,6 @@
     "woff",
     "woff2"
   ],
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "css": "^3.0.0",
-    "eslint": "^8.2.0",
-    "vinyl": "^2.2.1"
-  },
   "dependencies": {
     "css-font-style-keywords": "^1.0.1",
     "css-font-weight-keywords": "^1.0.0",
